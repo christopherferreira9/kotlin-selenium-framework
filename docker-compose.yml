@@ -1,0 +1,41 @@
+# To execute this docker-compose yml file use docker-compose -f <file_name> up
+# Add the "-d" flag at the end for deattached execution
+version: '2'
+services:
+  elgalu:
+    image: elgalu/selenium
+
+  zalenium:
+    image: dosel/zalenium:latest
+    ports:
+      - "4444:4444"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/videos:/home/seluser/videos
+    environment:
+      - DOCKER=17.06.2-ce
+      - NODE_MAX_SESSION=10
+      - NODE_MAX_INSTANCES=10
+    privileged: true
+    depends_on:
+      - elgalu
+    command:
+      start
+
+  firefox:
+    image: selenium/node-firefox:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - zalenium
+    environment:
+      HUB_HOST: hub
+
+  chrome:
+    image: selenium/node-chrome:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - zalenium
+    environment:
+      HUB_HOST: hub
