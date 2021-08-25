@@ -8,8 +8,11 @@ import org.openqa.selenium.support.FindBy
 import org.openqa.selenium.support.PageFactory
 
 class HomePage(private val testContext: TestContext) {
-    @FindBy(xpath = "//a[text()[contains(.,'Docs')]]")
+    @FindBy(xpath = "//span[text()[contains(.,'Docs')]]")
     private val docsHeaderLink: WebElement? = null
+
+    @FindBy(xpath = "//a[text()[contains(., 'Kotlin')]]")
+    private val kotlinDropdownOption: WebElement? = null
 
     init {
         PageFactory.initElements(testContext.driver, this)
@@ -21,11 +24,14 @@ class HomePage(private val testContext: TestContext) {
             .waitUntilClickable(docsHeaderLink, 10) {
                 click()
             }
-        assert(testContext.driver.currentUrl == "https://kotlinlang.org/docs/reference/")
+            .waitUntilClickable(kotlinDropdownOption, 10) {
+                click()
+            }
+        assert(testContext.driver.currentUrl == "https://kotlinlang.org/docs/home.html")
     }
 
-    @Step("Verify Current url is equal to https://kotlinlang.org/docs/reference/")
+    @Step("Verify Current url is equal to https://kotlinlang.org/docs/home.html")
     fun verifyCurrentUrl() {
-        assert(testContext.driver.currentUrl.toString() == "https://kotlinlang.org/docs/reference/")
+        assert(testContext.driver.currentUrl.toString() == "https://kotlinlang.org/docs/home.html")
     }
 }
